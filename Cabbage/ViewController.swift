@@ -165,7 +165,7 @@ class ViewController: UITableViewController {
             let imageCompositionGroupProvider = ImageCompositionGroupProvider()
             let url = Bundle.main.url(forResource: "overlay", withExtension: "jpg")!
             let image = CIImage(contentsOf: url)!
-            let resource = ImageResource(image: image, duration: CMTime.init(seconds: 3, preferredTimescale: 600))
+            let resource = LocalImageResource(image: image, duration: CMTime.init(seconds: 3, preferredTimescale: 600))
             let imageCompositionProvider = ImageOverlayItem(resource: resource)
             imageCompositionProvider.startTime = CMTime(seconds: 1, preferredTimescale: 600)
             let frame = CGRect.init(x: 100, y: 500, width: 400, height: 400)
@@ -231,7 +231,7 @@ class ViewController: UITableViewController {
         let overlayTrackItem: TrackItem = {
             let url = Bundle.main.url(forResource: "overlay", withExtension: "jpg")!
             let image = CIImage(contentsOf: url)!
-            let resource = ImageResource(image: image, duration: CMTime.init(seconds: 5, preferredTimescale: 600))
+            let resource = LocalImageResource(image: image, duration: CMTime.init(seconds: 5, preferredTimescale: 600))
             let trackItem = TrackItem(resource: resource)
             trackItem.videoConfiguration.contentMode = .aspectFit
             return trackItem

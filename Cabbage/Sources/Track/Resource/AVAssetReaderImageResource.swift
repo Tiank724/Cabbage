@@ -20,7 +20,7 @@ private var operationQueue: OperationQueue = {
 }()
 
 /// Load image from AVAssetReader as video frame
-open class AVAssetReaderImageResource: ImageResource {
+open class AVAssetReaderImageResource: LocalImageResource {
     
     public private(set) var asset: AVAsset?
     public private(set) var videoComposition: AVVideoComposition?
