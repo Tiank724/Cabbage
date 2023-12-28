@@ -10,7 +10,7 @@ import AVFoundation
 import UIKit
 
 /// Load image from PHAsset as video frame
-public class AVAssetTrackResource: Resource {
+public class AVAssetTrackResource: BaseResource {
     
     public var asset: AVAsset?
     

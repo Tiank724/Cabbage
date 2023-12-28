@@ -11,7 +11,7 @@ import CoreImage
 
 
 /// Provide a Image as video frame
-open class LocalImageResource: Resource {
+open class LocalImageResource: BaseResource {
     
     public init(image: CIImage, duration: CMTime) {
         super.init()

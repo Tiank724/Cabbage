@@ -21,7 +21,7 @@ public protocol ResourceTrackInfoProvider: AnyObject {
     func image(at time: CMTime, renderSize: CGSize) -> CIImage?
 }
 
-open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
+open class BaseResource: NSObject, NSCopying, ResourceTrackInfoProvider {
 
     required override public init() {
     }
@@ -59,7 +59,7 @@ open class Resource: NSObject, NSCopying, ResourceTrackInfoProvider {
     /// - Parameter type: specific media type, currently only support AVMediaTypeVideo and AVMediaTypeAudio
     /// - Returns: tracks
     open func tracks(for type: AVMediaType) -> [AVAssetTrack] {
-        if let tracks = Resource.emptyAsset?.tracks(withMediaType: type) {
+        if let tracks = BaseResource.emptyAsset?.tracks(withMediaType: type) {
             return tracks
         }
         return []
@@ -148,7 +148,7 @@ public class ResourceTask {
     }
 }
 
-public extension Resource {
+public extension BaseResource {
     func setSpeed(_ speed: Float) {
         scaledDuration = selectedTimeRange.duration * (1 / speed)
     }

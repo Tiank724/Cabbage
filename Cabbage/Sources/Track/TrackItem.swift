@@ -12,7 +12,7 @@ import CoreImage
 open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, TransitionableAudioProvider {
     
     public var identifier: String
-    public var resource: Resource
+    public var resource: BaseResource
 
     public var videoConfiguration: VideoConfiguration = VideoConfiguration.createDefaultConfiguration()
     public var audioConfiguration: AudioConfiguration = .createDefaultConfiguration()
@@ -20,7 +20,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     public var videoTransition: VideoTransition?
     public var audioTransition: AudioTransition?
     
-    public required init(resource: Resource) {
+    public required init(resource: BaseResource) {
         identifier = ProcessInfo.processInfo.globallyUniqueString
         self.resource = resource
         super.init()
@@ -29,7 +29,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     // MARK: - NSCopying
     
     open func copy(with zone: NSZone? = nil) -> Any {
-        let item = type(of: self).init(resource: resource.copy() as! Resource)
+        let item = type(of: self).init(resource: resource.copy() as! BaseResource)
         item.identifier = identifier
         item.videoTransition = videoTransition
         item.audioTransition = audioTransition

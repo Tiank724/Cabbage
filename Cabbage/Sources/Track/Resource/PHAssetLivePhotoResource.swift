@@ -24,7 +24,7 @@ public class PHAssetLivePhotoResource: AVAssetTrackResource {
     }
     
     @discardableResult
-    open override func prepare(progressHandler: ((Double) -> Void)? = nil, completion: @escaping (Resource.ResourceStatus, Error?) -> Void) -> ResourceTask? {
+    open override func prepare(progressHandler: ((Double) -> Void)? = nil, completion: @escaping (BaseResource.ResourceStatus, Error?) -> Void) -> ResourceTask? {
         if self.asset != nil {
             return super.prepare(progressHandler: progressHandler, completion: completion)
         }

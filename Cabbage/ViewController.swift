@@ -423,6 +423,7 @@ class ViewController: UITableViewController {
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
             let trackItem = TrackItem(resource: resource)
             trackItem.videoConfiguration.contentMode = .aspectFit
+            
             return trackItem
         }()
         
