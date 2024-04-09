@@ -29,6 +29,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         case aspectFit
         case aspectFill
         case custom
+        case cropSize(Float)
     }
     public var contentMode: BaseContentMode = .aspectFit
     /// Default is renderSize
@@ -36,6 +37,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     public var transform: CGAffineTransform?
     public var opacity: Float = 1.0
     public var configurations: [VideoConfigurationProtocol] = []
+    public var enableBlur: Bool = false
     
     public required override init() {
         super.init()
@@ -67,10 +69,16 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         }
 
         let frame = self.frame ?? CGRect(origin: CGPoint.zero, size: info.renderSize)
+        ///debugPrint("extent: \(finalImage.extent), randerSize: \(info.renderSize), fit: \(finalImage.extent.aspectFit(in: frame)), contentMode: \(contentMode)")
         switch contentMode {
         case .aspectFit:
             let transform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: frame)
             finalImage = finalImage.transformed(by: transform).cropped(to: frame)
+            if enableBlur, frame.height - finalImage.extent.aspectFit(in: frame).height > 20 {
+                if let blurImage = finalImage.gaussianBlur(frame: frame) {
+                    finalImage = blurImage
+                }
+            }
             break
         case .aspectFill:
             let transform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: frame)
@@ -82,6 +90,18 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
             transform = transform.concatenating(translateTransform)
             finalImage = finalImage.transformed(by: transform)
             break
+        case .cropSize(let padding):
+            ///debugPrint("cropSize padding: \(padding)")
+            if let cropImage = finalImage.resize(withHorizontalPadding: padding) {
+                let transform = CGAffineTransform.transform(by: cropImage.extent, aspectFitInRect: frame)
+                finalImage = cropImage.transformed(by: transform).cropped(to: frame)
+            }
+            if enableBlur, frame.height - finalImage.extent.aspectFit(in: frame).height > 20 {
+                if let blurImage = finalImage.gaussianBlur(frame: frame) {
+                    finalImage = blurImage
+                }
+            }
+            break
         }
         
         finalImage = finalImage.apply(alpha: CGFloat(opacity))
@@ -91,6 +111,37 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         }
         
         return finalImage
+    }
+}
+
+extension CIImage {
+    func resize(withHorizontalPadding value: Float) -> CIImage? {
+        let width = extent.width - CGFloat(value) * 2
+        let height = width * extent.height / extent.width
+        let cropped = cropped(to: extent.insetBy(dx: CGFloat(value), dy: (extent.height - height) / 2.0))
+        
+        // resize
+        let resizeFilter = CIFilter(name:"CILanczosScaleTransform")
+        resizeFilter?.setValue(cropped, forKey: kCIInputImageKey)
+        resizeFilter?.setValue(extent.width / width, forKey: kCIInputScaleKey)
+        return resizeFilter?.outputImage
+    }
+    func gaussianBlur(frame: CGRect) -> CIImage? {
+        let filter = CIFilter(name: "CIGaussianBlur")
+        filter?.setValue(self, forKey: kCIInputImageKey)
+        filter?.setValue(10.0, forKey: kCIInputRadiusKey)
+        if var bgImage = filter?.outputImage {
+            var transform = CGAffineTransform.transform(by: bgImage.extent, aspectFillRect: frame)
+            bgImage = bgImage.transformed(by: transform).cropped(to: frame)
+            transform = CGAffineTransform.transform(by: extent, aspectFitInRect: frame)
+            let frontImage = transformed(by: transform).cropped(to: frame)
+            // 图层叠加
+            let compFilter = CIFilter(name: "CISourceOverCompositing")
+            compFilter?.setValue(frontImage, forKey: kCIInputImageKey)
+            compFilter?.setValue(bgImage, forKey: kCIInputBackgroundImageKey)
+            return compFilter?.outputImage
+        }
+        return nil
     }
 }
 

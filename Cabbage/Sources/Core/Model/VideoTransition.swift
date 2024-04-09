@@ -78,10 +78,10 @@ public class PushTransition: NoneTransition {
     override public func renderImage(foregroundImage: CIImage, backgroundImage: CIImage, forTweenFactor tween: Float64, renderSize: CGSize) -> CIImage {
         
         let tween = TimingFunctionFactory.quadraticEaseInOut(p: Float(tween))
-        let offsetTransform = CGAffineTransform(translationX: renderSize.width * CGFloat(tween), y: 0)
+        let offsetTransform = CGAffineTransform(translationX: renderSize.width * CGFloat(-1 * tween), y: 0)
         let bgImage = image(backgroundImage, apply: offsetTransform)
         
-        let foregroundTransform = CGAffineTransform(translationX: renderSize.width * CGFloat(-1 + tween), y: 0)
+        let foregroundTransform = CGAffineTransform(translationX: renderSize.width * CGFloat(1 - tween), y: 0)
         let frontImage = image(foregroundImage, apply: foregroundTransform)
         
         let resultImage = bgImage.composited(over: frontImage)
