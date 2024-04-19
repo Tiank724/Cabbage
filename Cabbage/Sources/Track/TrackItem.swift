@@ -20,16 +20,19 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
     public var videoTransition: VideoTransition?
     public var audioTransition: AudioTransition?
     
-    public required init(resource: BaseResource) {
+    public var type: ResourceType
+    
+    public required init(resource: BaseResource, type: ResourceType = .trackItem) {
         identifier = ProcessInfo.processInfo.globallyUniqueString
         self.resource = resource
+        self.type = type
         super.init()
     }
     
     // MARK: - NSCopying
     
     open func copy(with zone: NSZone? = nil) -> Any {
-        let item = type(of: self).init(resource: resource.copy() as! BaseResource)
+        let item = Swift.type(of: self).init(resource: resource.copy() as! BaseResource, type: type)
         item.identifier = identifier
         item.videoTransition = videoTransition
         item.audioTransition = audioTransition
@@ -90,7 +93,7 @@ open class TrackItem: NSObject, NSCopying, TransitionableVideoProvider, Transiti
             }
             return sourceImage
         }()
-        let info = VideoConfigurationEffectInfo.init(time: time, renderSize: renderSize, timeRange: timeRange)
+        let info = VideoConfigurationEffectInfo.init(time: time, renderSize: renderSize, timeRange: timeRange, type: type)
         finalImage = videoConfiguration.applyEffect(to: finalImage, info: info)
         
         return finalImage

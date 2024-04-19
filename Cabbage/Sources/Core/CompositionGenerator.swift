@@ -47,10 +47,10 @@ public class CompositionGenerator {
         return imageGenerator
     }
     
-    public func buildExportSession(presetName: String) -> AVAssetExportSession? {
+    public func buildExportSession(presetName: String, fps: CMTimeScale = 30) -> AVAssetExportSession? {
         let composition = buildComposition()
         let exportSession = AVAssetExportSession.init(asset: composition, presetName: presetName)
-        exportSession?.videoComposition = buildVideoComposition()
+        exportSession?.videoComposition = buildVideoComposition(fps: fps)
         exportSession?.audioMix = buildAudioMix()
         exportSession?.outputURL = {
             let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
@@ -192,7 +192,7 @@ public class CompositionGenerator {
         return composition
     }
     
-    public func buildVideoComposition() -> AVVideoComposition? {
+    public func buildVideoComposition(fps: CMTimeScale = 30) -> AVVideoComposition? {
         if let videoComposition = self.videoComposition, !needRebuildVideoComposition {
             return videoComposition
         }
@@ -238,7 +238,7 @@ public class CompositionGenerator {
         })
         
         let videoComposition = AVMutableVideoComposition()
-        videoComposition.frameDuration = CMTime(value: 1, timescale: 30)
+        videoComposition.frameDuration = CMTime(value: 1, timescale: fps)
         videoComposition.renderSize = self.timeline.renderSize
         videoComposition.instructions = instructions
         videoComposition.customVideoCompositorClass = VideoCompositor.self

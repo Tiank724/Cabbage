@@ -8,11 +8,14 @@
 
 import AVFoundation
 import CoreImage
+import UIKit
 
 public struct VideoConfigurationEffectInfo {
+    
     public var time = CMTime.zero
     public var renderSize = CGSize.zero
     public var timeRange = CMTimeRange.zero
+    public var type: ResourceType?
 }
 
 public protocol VideoConfigurationProtocol: NSCopying {
@@ -37,7 +40,15 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     public var transform: CGAffineTransform?
     public var opacity: Float = 1.0
     public var configurations: [VideoConfigurationProtocol] = []
+    
+    /// 是否开启高斯模糊
     public var enableBlur: Bool = false
+    /// 随机切分
+    public var split: CSVideoSplitDirection? = nil
+    /// 滤镜
+    public var filters: [CIFilter?] = []
+    /// 画中画效果
+    public var pipOffset: Double = 0.0
     
     public required override init() {
         super.init()
@@ -74,9 +85,27 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         case .aspectFit:
             let transform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: frame)
             finalImage = finalImage.transformed(by: transform).cropped(to: frame)
-            if enableBlur, frame.height - finalImage.extent.aspectFit(in: frame).height > 20 {
-                if let blurImage = finalImage.gaussianBlur(frame: frame) {
-                    finalImage = blurImage
+            
+            if info.type == .trackItem {
+                if let split {
+                    if let image = finalImage.splitTwoImage(frame: frame, direction: split, filters: filters) {
+                        finalImage = image
+                    }
+                }
+                
+                /// 添加滤镜
+                if !filters.isEmpty {
+                    filters.forEach { filter in
+                        if let filter, let output = finalImage.apply(filter) {
+                            finalImage = output
+                        }
+                    }
+                }
+                
+                if pipOffset > 0.0 {
+                    if let blurImage = finalImage.gaussianBlur(frame: frame, horizontalPadding: pipOffset) {
+                        finalImage = blurImage
+                    }
                 }
             }
             break
@@ -92,14 +121,46 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
             break
         case .cropSize(let padding):
             ///debugPrint("cropSize padding: \(padding)")
-            if let cropImage = finalImage.resize(withHorizontalPadding: padding) {
+            if let cropImage = finalImage.cropSize(withHorizontalPadding: padding) {
                 let transform = CGAffineTransform.transform(by: cropImage.extent, aspectFitInRect: frame)
                 finalImage = cropImage.transformed(by: transform).cropped(to: frame)
             }
-            if enableBlur, frame.height - finalImage.extent.aspectFit(in: frame).height > 20 {
-                if let blurImage = finalImage.gaussianBlur(frame: frame) {
-                    finalImage = blurImage
+            
+            if info.type == .trackItem {
+                if let split {
+                    if let image = finalImage.splitTwoImage(frame: frame, direction: split, filters: filters) {
+                        finalImage = image
+                    }
                 }
+                
+                /// 添加滤镜
+                if !filters.isEmpty {
+                    filters.forEach { filter in
+                        if let filter, let output = finalImage.apply(filter) {
+                            finalImage = output
+                        }
+                    }
+                }
+                
+                if pipOffset > 0.0 {
+                    if let blurImage = finalImage.gaussianBlur(frame: frame, horizontalPadding: pipOffset) {
+                        finalImage = blurImage
+                    }
+                }
+                
+                /*
+                /// 视频非全屏
+                if frame.height - finalImage.extent.aspectFit(in: frame).height > 20 {
+                    /// 添加背景模糊效果
+                    if enableBlur {
+                        if let blurImage = finalImage.gaussianBlur(frame: frame) {
+                            finalImage = blurImage
+                        }
+                    }
+                }
+                /// 视频全屏
+                else {}
+                 */
             }
             break
         }
@@ -111,37 +172,6 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         }
         
         return finalImage
-    }
-}
-
-extension CIImage {
-    func resize(withHorizontalPadding value: Float) -> CIImage? {
-        let width = extent.width - CGFloat(value) * 2
-        let height = width * extent.height / extent.width
-        let cropped = cropped(to: extent.insetBy(dx: CGFloat(value), dy: (extent.height - height) / 2.0))
-        
-        // resize
-        let resizeFilter = CIFilter(name:"CILanczosScaleTransform")
-        resizeFilter?.setValue(cropped, forKey: kCIInputImageKey)
-        resizeFilter?.setValue(extent.width / width, forKey: kCIInputScaleKey)
-        return resizeFilter?.outputImage
-    }
-    func gaussianBlur(frame: CGRect) -> CIImage? {
-        let filter = CIFilter(name: "CIGaussianBlur")
-        filter?.setValue(self, forKey: kCIInputImageKey)
-        filter?.setValue(10.0, forKey: kCIInputRadiusKey)
-        if var bgImage = filter?.outputImage {
-            var transform = CGAffineTransform.transform(by: bgImage.extent, aspectFillRect: frame)
-            bgImage = bgImage.transformed(by: transform).cropped(to: frame)
-            transform = CGAffineTransform.transform(by: extent, aspectFitInRect: frame)
-            let frontImage = transformed(by: transform).cropped(to: frame)
-            // 图层叠加
-            let compFilter = CIFilter(name: "CISourceOverCompositing")
-            compFilter?.setValue(frontImage, forKey: kCIInputImageKey)
-            compFilter?.setValue(bgImage, forKey: kCIInputBackgroundImageKey)
-            return compFilter?.outputImage
-        }
-        return nil
     }
 }
 
