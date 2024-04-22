@@ -257,7 +257,7 @@ public extension CIImage {
     static func randomBuiltinFilter() -> CIFilter {
         let filters = [
             //#CIFilter(name: "CILinearToSRGBToneCurve"),  // 将颜色强度从线性伽马曲线映射到sRGB颜色空间
-            CIFilter(name: "CISRGBToneCurveToLinear"),  // 将颜色强度从sRGB颜色空间映射到线性伽玛曲线
+            //#CIFilter(name: "CISRGBToneCurveToLinear"),  // 将颜色强度从sRGB颜色空间映射到线性伽玛曲线
             CIFilter(name: "CIVignette"),               // 降低图像边缘的亮度
             CIFilter(name: "CISharpenLuminance"),       // 通过锐化增加图像细节
             CIFilter(name: "CIUnsharpMask"),            // 增加图像中不同颜色像素之间的边缘对比度
