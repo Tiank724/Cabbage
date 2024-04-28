@@ -123,9 +123,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
             ///debugPrint("cropSize padding: \(padding)")
             if let cropImage = finalImage.cropSize(withHorizontalPadding: padding) {
                 let transform = CGAffineTransform.transform(by: cropImage.extent, aspectFitInRect: frame)
-                if var finalImage = cropImage.transformed(by: transform).cropSize(withHorizontalPadding: 2) {
-                    finalImage = finalImage.cropped(to: frame)
-                }
+                finalImage = cropImage.transformed(by: transform).cropped(to: frame)
             }
 
             if info.type == .trackItem {
