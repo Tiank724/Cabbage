@@ -44,7 +44,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     /// 是否开启高斯模糊
     public var enableBlur: Bool = false
     /// 随机切分
-    public var split: CSVideoSplitDirection? = nil
+    public var split: MJVideoSplitType? = nil
     /// 滤镜
     public var filters: [CIFilter?] = []
     /// 画中画效果
