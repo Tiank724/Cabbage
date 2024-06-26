@@ -27,6 +27,38 @@ public protocol AudioTransition {
     func applyNextAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange)
 }
 
+public class LinearAudioTransition: AudioTransition {
+    
+    public var identifier: String {
+        return String(describing: self)
+    }
+    
+    open var duration: CMTime
+    
+    public init(duration: CMTime = CMTime.zero) {
+        self.duration = duration
+    }
+    
+    public func applyPreviousAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange) {
+        let effectTimeRange = CMTimeRange.init(start: timeRange.end - duration, end: timeRange.end)
+        let node = VolumeAudioConfiguration.init(timeRange: effectTimeRange, startVolume: 1, endVolume: 0)
+        node.timingFunction = { (percent: Double) -> Double in
+            return Double(TimingFunctionFactory.linearInterpolation(p: Float(percent)))
+        }
+        audioMixInputParameters.appendAudioProcessNode(node)
+    }
+    
+    public func applyNextAudioMixInputParameters(_ audioMixInputParameters: AVMutableAudioMixInputParameters, timeRange: CMTimeRange) {
+        let effectTimeRange = CMTimeRange(start: timeRange.start, end: timeRange.start + duration)
+        let node = VolumeAudioConfiguration.init(timeRange: effectTimeRange, startVolume: 0, endVolume: 1)
+        node.timingFunction = { (percent: Double) -> Double in
+            return Double(TimingFunctionFactory.linearInterpolation(p: Float(percent)))
+        }
+        audioMixInputParameters.appendAudioProcessNode(node)
+    }
+    
+}
+
 public class FadeInOutAudioTransition: AudioTransition {
     
     public var identifier: String {
