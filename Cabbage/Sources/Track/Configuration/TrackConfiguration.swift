@@ -31,6 +31,7 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
     public enum BaseContentMode {
         case aspectFit
         case aspectFill
+        case aspectTopFill(CGFloat)
         case custom
         case cropSize(Float)
     }
@@ -80,7 +81,6 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
         }
 
         let frame = self.frame ?? CGRect(origin: CGPoint.zero, size: info.renderSize)
-        ///debugPrint("extent: \(finalImage.extent), randerSize: \(info.renderSize), fit: \(finalImage.extent.aspectFit(in: frame)), contentMode: \(contentMode)")
         switch contentMode {
         case .aspectFit:
             let transform = CGAffineTransform.transform(by: finalImage.extent, aspectFitInRect: frame)
@@ -113,6 +113,11 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
             let transform = CGAffineTransform.transform(by: finalImage.extent, aspectFillRect: frame)
             finalImage = finalImage.transformed(by: transform).cropped(to: frame)
             break
+        case .aspectTopFill(let padding):
+            var transform = CGAffineTransform.transform(by: finalImage.extent, aspectTopFillRect: frame)
+            transform = transform.concatenating(CGAffineTransform(translationX: 0, y: padding))
+            finalImage = finalImage.transformed(by: transform).cropped(to: frame)
+            break
         case .custom:
             var transform = CGAffineTransform(scaleX: frame.size.width / sourceImage.extent.size.width, y: frame.size.height / sourceImage.extent.size.height)
             let translateTransform = CGAffineTransform.init(translationX: frame.origin.x, y: frame.origin.y)
@@ -120,7 +125,6 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
             finalImage = finalImage.transformed(by: transform)
             break
         case .cropSize(let padding):
-            ///debugPrint("cropSize padding: \(padding)")
             if let cropImage = finalImage.cropSize(withHorizontalPadding: padding) {
                 let transform = CGAffineTransform.transform(by: cropImage.extent, aspectFitInRect: frame)
                 finalImage = cropImage.transformed(by: transform).cropped(to: frame)
@@ -147,22 +151,14 @@ public class VideoConfiguration: NSObject, VideoConfigurationProtocol {
                         finalImage = blurImage
                     }
                 }
-                
-                /*
-                /// 视频非全屏
-                if frame.height - finalImage.extent.aspectFit(in: frame).height > 20 {
-                    /// 添加背景模糊效果
-                    if enableBlur {
-                        if let blurImage = finalImage.gaussianBlur(frame: frame) {
-                            finalImage = blurImage
-                        }
-                    }
-                }
-                /// 视频全屏
-                else {}
-                 */
             }
             break
+        }
+        
+        if info.type == .overlayVideo {
+            if let imageURL = Bundle.main.url(forResource: "vf_mask_layer", withExtension: "png") {
+                finalImage = finalImage.apply(blendWithMask: imageURL)
+            }
         }
         
         finalImage = finalImage.apply(alpha: CGFloat(opacity))

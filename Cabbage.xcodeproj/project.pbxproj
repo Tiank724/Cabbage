@@ -50,6 +50,11 @@
 		5FE63CC721A0EFAD006FD15A /* AVAssetReaderImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */; };
 		5FE63CC921A1B131006FD15A /* AVAssetReverseImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */; };
 		5FFDD53D21C4E34500AD08E5 /* 853.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5FFDD53C21C4E34400AD08E5 /* 853.mp4 */; };
+		FA35638D2C75BFDF00BCB6A3 /* GifImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA35638B2C75BFDF00BCB6A3 /* GifImageResource.swift */; };
+		FA35638E2C75BFDF00BCB6A3 /* ResourceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA35638C2C75BFDF00BCB6A3 /* ResourceType.swift */; };
+		FA3563902C75C01900BCB6A3 /* GifImageOverlayItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA35638F2C75C01900BCB6A3 /* GifImageOverlayItem.swift */; };
+		FA3563922C75C03400BCB6A3 /* ImageEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3563912C75C03400BCB6A3 /* ImageEffect.swift */; };
+		FA78D8972C75C898001CD160 /* vf_mask_layer.png in Resources */ = {isa = PBXBuildFile; fileRef = FA78D8962C75C898001CD160 /* vf_mask_layer.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +103,11 @@
 		5FE63CC621A0EFAD006FD15A /* AVAssetReaderImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReaderImageResource.swift; sourceTree = "<group>"; };
 		5FE63CC821A1B131006FD15A /* AVAssetReverseImageResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetReverseImageResource.swift; sourceTree = "<group>"; };
 		5FFDD53C21C4E34400AD08E5 /* 853.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 853.mp4; sourceTree = "<group>"; };
+		FA35638B2C75BFDF00BCB6A3 /* GifImageResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifImageResource.swift; sourceTree = "<group>"; };
+		FA35638C2C75BFDF00BCB6A3 /* ResourceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceType.swift; sourceTree = "<group>"; };
+		FA35638F2C75C01900BCB6A3 /* GifImageOverlayItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifImageOverlayItem.swift; sourceTree = "<group>"; };
+		FA3563912C75C03400BCB6A3 /* ImageEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImageEffect.swift; path = Cabbage/Sources/Uitl/ImageEffect.swift; sourceTree = SOURCE_ROOT; };
+		FA78D8962C75C898001CD160 /* vf_mask_layer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vf_mask_layer.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +125,8 @@
 			isa = PBXGroup;
 			children = (
 				5F4645A3210C71790013ADC3 /* Resource.swift */,
+				FA35638B2C75BFDF00BCB6A3 /* GifImageResource.swift */,
+				FA35638C2C75BFDF00BCB6A3 /* ResourceType.swift */,
 				5F46459F210C71790013ADC3 /* ImageResource.swift */,
 				5F4645A1210C71790013ADC3 /* PHAssetImageResource.swift */,
 				5F46459E210C71790013ADC3 /* PHAssetTrackResource.swift */,
@@ -190,6 +202,7 @@
 		5F464591210C71790013ADC3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				FA3563912C75C03400BCB6A3 /* ImageEffect.swift */,
 				5F464592210C71790013ADC3 /* VideoTransition.swift */,
 				5F464593210C71790013ADC3 /* Timeline.swift */,
 				5F464594210C71790013ADC3 /* CompositionProvider.swift */,
@@ -201,6 +214,7 @@
 		5F464598210C71790013ADC3 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				FA78D8962C75C898001CD160 /* vf_mask_layer.png */,
 				5F464599210C71790013ADC3 /* black_empty.mp4 */,
 			);
 			path = Resource;
@@ -212,6 +226,7 @@
 				5F3BEE94216449B000881217 /* Resource */,
 				5F568225219821E300BBF5FE /* Configuration */,
 				5F4645A0210C71790013ADC3 /* TrackItem.swift */,
+				FA35638F2C75C01900BCB6A3 /* GifImageOverlayItem.swift */,
 				5F3BEE922163804A00881217 /* ImageOverlayItem.swift */,
 				5F3BEE902163717600881217 /* ImageCompositionGroupProvider.swift */,
 			);
@@ -317,6 +332,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA78D8972C75C898001CD160 /* vf_mask_layer.png in Resources */,
 				5F64D0E721981E850084A0AA /* bamboo.mp4 in Resources */,
 				5FC25A8827E8101B0024D04E /* hdr.mov in Resources */,
 				5F46457F210C71400013ADC3 /* LaunchScreen.storyboard in Resources */,
@@ -345,6 +361,7 @@
 				5F3BEE912163717600881217 /* ImageCompositionGroupProvider.swift in Sources */,
 				5F4645B9210C71790013ADC3 /* PHAssetImageResource.swift in Sources */,
 				5F4645B0210C71790013ADC3 /* AudioTransition.swift in Sources */,
+				FA3563922C75C03400BCB6A3 /* ImageEffect.swift in Sources */,
 				5F4645BC210C71790013ADC3 /* ImageGeneratorExtension.swift in Sources */,
 				5F3BEE932163804A00881217 /* ImageOverlayItem.swift in Sources */,
 				5F4645AC210C71790013ADC3 /* TimeRangeExtension.swift in Sources */,
@@ -352,7 +369,10 @@
 				5F4645AB210C71790013ADC3 /* CMTimeExtensition.swift in Sources */,
 				5F4645A8210C71790013ADC3 /* TimingFunctionFactory.swift in Sources */,
 				5F4645A9210C71790013ADC3 /* Log.swift in Sources */,
+				FA35638E2C75BFDF00BCB6A3 /* ResourceType.swift in Sources */,
 				5F4645BB210C71790013ADC3 /* Resource.swift in Sources */,
+				FA35638D2C75BFDF00BCB6A3 /* GifImageResource.swift in Sources */,
+				FA3563902C75C01900BCB6A3 /* GifImageOverlayItem.swift in Sources */,
 				5F4645BA210C71790013ADC3 /* AVAssetTrackResource.swift in Sources */,
 				5F4645B2210C71790013ADC3 /* VideoCompositor.swift in Sources */,
 				5F4645AF210C71790013ADC3 /* CompositionProvider.swift in Sources */,

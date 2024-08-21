@@ -351,29 +351,26 @@ class ViewController: UITableViewController {
     
     
     func twoVideoPlayerItem() -> AVPlayerItem {
-        let renderSize = CGSize(width: 1920, height: 1080)
+        let renderSize = CGSize(width: 1080, height: 1920)
         let bambooTrackItem: TrackItem = {
-            let width = renderSize.width / 2
-            let height = width * (9/16)
-            let url = Bundle.main.url(forResource: "bamboo", withExtension: "mp4")!
+            let url = Bundle.main.url(forResource: "853", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
-            resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, end: CMTime.init(value: 1800, 600))
+            resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, end: CMTime.init(value: 4800, 600))
             let trackItem = TrackItem(resource: resource)
             trackItem.videoConfiguration.contentMode = .custom
-            trackItem.videoConfiguration.frame = CGRect(x: 0, y: (renderSize.height - height) / 2, width: width, height: height)
+            trackItem.videoConfiguration.frame = CGRect(x: 0, y: 0, width: renderSize.width, height: renderSize.height)
             return trackItem
         }()
         
         let seaTrackItem: TrackItem = {
-            let height = renderSize.height
-            let width = height * (9/16)
             let url = Bundle.main.url(forResource: "cute", withExtension: "mp4")!
             let resource = AVAssetTrackResource(asset: AVAsset(url: url))
-            resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, end: CMTime.init(value: 1800, 600))
-            let trackItem = TrackItem(resource: resource)
+            
+            resource.selectedTimeRange = CMTimeRange.init(start: CMTime.zero, end: CMTime.init(value: 4800, 600))
+            let trackItem = TrackItem(resource: resource, type: .overlayVideo)
             trackItem.audioConfiguration.volume = 0.3
-            trackItem.videoConfiguration.contentMode = .custom
-            trackItem.videoConfiguration.frame = CGRect(x: renderSize.width / 2 + (renderSize.width / 2 - width) / 2, y: (renderSize.height - height) / 2, width: width, height: height)
+            trackItem.videoConfiguration.contentMode = .aspectTopFill(800)
+            trackItem.videoConfiguration.frame = CGRect(x: 0, y: 0, width: renderSize.width, height: renderSize.height / 2)
             return trackItem
         }()
         

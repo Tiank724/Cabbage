@@ -96,11 +96,8 @@ public extension CIImage {
     /// 裁切尺寸
     func cropSize(withHorizontalPadding value: Float) -> CIImage? {
         let width = extent.width - CGFloat(value) * 2
-        //let height = width * extent.height / extent.width
-        //let cropped = cropped(to: extent.insetBy(dx: CGFloat(value), dy: (extent.height - height) / 2.0))
         let cropped = cropped(to: extent.insetBy(dx: CGFloat(value), dy: CGFloat(value) / extent.width * extent.height))
         
-        // resize
         let resizeFilter = CIFilter(name:"CILanczosScaleTransform")
         resizeFilter?.setValue(cropped, forKey: kCIInputImageKey)
         resizeFilter?.setValue(extent.width / width, forKey: kCIInputScaleKey)

@@ -23,6 +23,13 @@ public extension CGRect {
         let y = rect.origin.y + (rect.size.height - size.height) / 2
         return CGRect(x: x, y: y, width: size.width, height: size.height)
     }
+    
+    func aspectTopFill(in rect: CGRect) -> CGRect {
+        let size = self.size.aspectFill(in: rect.size)
+        let x = rect.origin.x + (rect.size.width - size.width) / 2
+        let y = rect.origin.y + (rect.size.height - size.height)
+        return CGRect(x: x, y: y, width: size.width, height: size.height)
+    }
 }
 
 public extension CGSize {
@@ -69,6 +76,15 @@ public extension CGAffineTransform {
         let fillRect = sourceRect.aspectFill(in: fillTargetRect)
         let xRatio = fillRect.size.width / sourceRect.size.width
         let yRatio = fillRect.size.height / sourceRect.size.height
+        
+        return CGAffineTransform(translationX: fillRect.origin.x - sourceRect.origin.x * xRatio, y: fillRect.origin.y - sourceRect.origin.y * yRatio).scaledBy(x: xRatio, y: yRatio)
+    }
+    
+    static func transform(by sourceRect: CGRect, aspectTopFillRect fillTargetRect: CGRect) -> CGAffineTransform {
+        let fillRect = sourceRect.aspectTopFill(in: fillTargetRect)
+        let xRatio = fillRect.size.width / sourceRect.size.width
+        let yRatio = fillRect.size.height / sourceRect.size.height
+        
         return CGAffineTransform(translationX: fillRect.origin.x - sourceRect.origin.x * xRatio, y: fillRect.origin.y - sourceRect.origin.y * yRatio).scaledBy(x: xRatio, y: yRatio)
     }
     

@@ -7,6 +7,7 @@
 
 import ImageIO
 import CoreMedia
+import CoreImage
 
 /// Provide a Image as video frame
 open class LocalGifImageResource: BaseResource {
